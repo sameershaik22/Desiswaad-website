@@ -36,14 +36,43 @@ export default function AboutPage() {
               <h2 className="heading-lg" style={{ marginBottom: 16 }}>The DesiSwad Story</h2>
               <div className="gold-line-left" />
               <p className="about-para">
-                DesiSwad Foods was born from a simple but powerful idea: <strong>everyone deserves the real taste of home.</strong> Growing up in Telangana, every festival, family gathering, and chai-time was incomplete without the distinctive crunch of Chekodi, the bold kick of Khara Mixture, or the delicate sweetness of Achappam.
+                DesiSwad Foods was founded by <strong>Shaik Feroz</strong>, an MBA graduate from Hyderabad who chose entrepreneurship over a corporate career to build something meaningful and lasting.
               </p>
               <p className="about-para">
-                These snacks weren't just food — they were memories. Made by grandmothers with recipes passed down through generations, each bite carries the warmth of tradition. But as families moved to cities and across the world, this taste became harder to find.
+                The inspiration behind DesiSwad Foods comes from a strong family business foundation. For more than 10 years, <strong>Telangana Food Products</strong> has been manufacturing traditional snacks and serving customers across the region. The manufacturing unit is led by Mr. Shaik Shareef, who started his journey as an auto driver and, through hard work, determination, and vision, built a successful snack manufacturing business from the ground up.
               </p>
               <p className="about-para">
-                That's why we started DesiSwad Foods. To bring these authentic flavours back, made exactly as they always were — by hand, in our home kitchen, with love.
+                Today, Telangana Food Products operates with a dedicated team of 10 workers and continues to produce authentic traditional snacks using time-tested recipes and quality ingredients.
               </p>
+              <p className="about-para">
+                Growing up and watching this journey closely inspired me to think beyond local markets. I saw how customers trusted the products, appreciated the authentic taste, and kept coming back for the quality. That experience planted the seed for a bigger vision.
+              </p>
+              <p className="about-para">
+                After completing my MBA and gaining experience in the corporate IT sector, I realized that these authentic Telangana flavors deserved a larger platform. Traditional snacks such as Chekodi and Khara Mixture had the potential to reach customers across India when combined with modern branding, professional packaging, and digital commerce.
+              </p>
+              <p className="about-para" style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--red)', fontStyle: 'italic', margin: '20px 0' }}>
+                With this vision, I launched DesiSwad Foods.
+              </p>
+              <p className="about-para">
+                Built on the manufacturing expertise of Telangana Food Products and driven by a passion for entrepreneurship, DesiSwad Foods was created to bring authentic Telangana snacks to modern consumers while maintaining the highest standards of quality, hygiene, and trust.
+              </p>
+              <p className="about-para">
+                Today, DesiSwad Foods proudly offers products such as Classic Chekodi, Spicy Chekodi, and Khara Mixture. Every pack represents years of family experience, authentic recipes, and a commitment to delivering traditional taste with modern quality standards.
+              </p>
+              <p className="about-para">
+                To strengthen customer trust and ensure compliance with industry standards, DesiSwad Foods operates with GST Registration, FSSAI Certification, and Trademark Registration. These milestones reflect our commitment to quality, food safety, brand protection, and long-term growth.
+              </p>
+              <p className="about-para">
+                <strong>Our mission</strong> is not just to sell snacks but to preserve Telangana's rich food heritage and share it with families across India through e-commerce platforms, retail stores, supermarkets, and modern trade channels.
+              </p>
+              <p className="about-para">
+                <strong>Our vision</strong> is to build DesiSwad Foods into one of India's most trusted premium traditional snack brands while taking the authentic taste of Telangana to customers across the country and beyond.
+              </p>
+              <div style={{ marginTop: 32, padding: 24, background: 'var(--cream-light)', borderRadius: 12, border: '1px solid var(--gold-light)' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', color: 'var(--red-dark)', marginBottom: 8, fontSize: '1.3rem', fontWeight: 800 }}>DESISWAD FOODS</h3>
+                <p style={{ fontWeight: 700, color: 'var(--gold-dark)', fontSize: '1.1rem', marginBottom: 4 }}>Pure Taste. Pure Trust.</p>
+                <p style={{ color: 'var(--gray-600)', fontStyle: 'italic', fontSize: '0.95rem' }}>From Family Tradition to a Trusted Indian Brand.</p>
+              </div>
             </div>
             <div className="about-story__img">
               <Image src="/hero_banner.png" alt="Traditional Telangana Snacks" fill style={{ objectFit: 'cover' }} />
