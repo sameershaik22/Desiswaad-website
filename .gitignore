@@ -39,3 +39,37 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# =========================
+# Backend (Python / FastAPI)
+# =========================
+backend/venv/
+backend/__pycache__/
+backend/.pytest_cache/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# =========================
+# Databases
+# =========================
+*.sqlite3
+*.db
+server/desiswad.db
+
+# =========================
+# Environment Variables
+# =========================
+# Make sure .env files are NOT pushed!
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
