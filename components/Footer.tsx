@@ -77,7 +77,7 @@ export default function Footer() {
               </li>
               <li>
                 <span>📍</span>
-                <span>Hyderabad, Telangana</span>
+                <span>Kaghaznagar</span>
               </li>
             </ul>
             <a

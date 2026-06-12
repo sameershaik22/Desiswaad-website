@@ -30,7 +30,7 @@ export const PRODUCTS: Product[] = [
     images: ["/product_chekodi_front.jpeg", "/product_chekodi_back.jpeg"],
     rating: 4.8,
     reviews: 124,
-    prices: { "450g": 169, "700g": 249 } as Record<string, number>,
+    prices: { "450g": 1, "700g": 249 } as Record<string, number>,
     bestseller: true,
     spiceLevel: "Medium",
     shelfLife: "3 Months",
