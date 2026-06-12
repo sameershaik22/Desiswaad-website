@@ -35,6 +35,8 @@ type Stats = {
   totalOrders: number;
   totalRevenue: number;
   pendingOrders: number;
+  confirmedOrders: number;
+  preparingOrders: number;
   deliveredOrders: number;
   todayOrders: number;
   onlineRevenue: number;
@@ -61,8 +63,10 @@ const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }
 const STAT_CARDS = [
   { key: 'totalOrders', label: 'Total Orders', icon: '📦', color: '#1E5B3A', bg: '#e8f5e9' },
   { key: 'totalRevenue', label: 'Total Revenue', icon: '💰', color: '#b8860b', bg: '#fdfaf4', prefix: '₹' },
-  { key: 'pendingOrders', label: 'Active Orders', icon: '⏳', color: '#e65100', bg: '#fff3e0' },
-  { key: 'deliveredOrders', label: 'Delivered', icon: '✅', color: '#1565c0', bg: '#e3f2fd' },
+  { key: 'pendingOrders', label: 'Pending', icon: '⏳', color: '#f57f17', bg: '#fff8e1' },
+  { key: 'confirmedOrders', label: 'Confirmed', icon: '👍', color: '#1565c0', bg: '#e3f2fd' },
+  { key: 'preparingOrders', label: 'Preparing', icon: '🍳', color: '#e65100', bg: '#fff3e0' },
+  { key: 'deliveredOrders', label: 'Delivered', icon: '✅', color: '#2e7d32', bg: '#e8f5e9' },
 ];
 
 const WHATSAPP_NUM = '919640497340';
@@ -111,8 +115,10 @@ export default function AdminDashboard() {
       setStats({
         totalOrders:     s.total_orders    ?? 0,
         totalRevenue:    s.total_sales     ?? 0,
-        pendingOrders:   mappedOrders.filter((o: any) => o.status === 'Pending' || o.status === 'Order Confirmed').length,
-        deliveredOrders: mappedOrders.filter((o: any) => o.status === 'Delivered').length,
+        pendingOrders:   mappedOrders.filter((o: any) => o.status?.toLowerCase() === 'placed' || o.status?.toLowerCase() === 'pending').length,
+        confirmedOrders: mappedOrders.filter((o: any) => o.status?.toLowerCase() === 'confirmed').length,
+        preparingOrders: mappedOrders.filter((o: any) => o.status?.toLowerCase() === 'processing' || o.status?.toLowerCase() === 'preparing').length,
+        deliveredOrders: mappedOrders.filter((o: any) => o.status?.toLowerCase() === 'delivered').length,
         todayOrders:     todayCount,
         onlineRevenue:   mappedOrders.filter((o: any) => o.payment_mode !== 'COD' && o.payment_status === 'paid')
                            .reduce((sum: number, o: any) => sum + (o.total || 0), 0),

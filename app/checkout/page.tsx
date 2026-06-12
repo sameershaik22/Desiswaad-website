@@ -748,7 +748,17 @@ export default function CheckoutPage() {
         },
         prefill: { name: form.name, email: form.email, contact: form.phone },
         theme: { color: '#f59e0b' },
-        modal: { ondismiss: () => setLoading(false) },
+        modal: { 
+          ondismiss: async function() {
+            setLoading(false);
+            try {
+              // Delete the abandoned order from database so it doesn't show up in admin/my-orders
+              await fetch(`/api/orders/${dbOrderId}`, { method: 'DELETE' });
+            } catch (err) {
+              console.error("Failed to delete abandoned order:", err);
+            }
+          } 
+        },
       };
       const razor = new window.Razorpay(options);
       razor.open();

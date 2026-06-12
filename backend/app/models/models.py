@@ -53,6 +53,13 @@ class Order(Base):
     payment_status = Column(String, default="pending")   # "pending" | "paid"
     status = Column(String, default="Pending")
     delivered_at = Column(DateTime(timezone=True), nullable=True)
+    
+    # Delivery partner integration fields
+    delivery_partner = Column(String, nullable=True)
+    tracking_number = Column(String, nullable=True)
+    awb_number = Column(String, nullable=True)
+    expected_delivery_date = Column(DateTime(timezone=True), nullable=True)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="orders")

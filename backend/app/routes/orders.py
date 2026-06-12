@@ -173,3 +173,21 @@ def get_user_order(order_id: str, request: Request, db: Session = Depends(get_db
         "reviews": reviews
     }
 
+@router.delete("/{order_id}")
+def delete_pending_order(order_id: str, db: Session = Depends(get_db)):
+    """Delete an order that was created but payment was cancelled or failed."""
+    order = db.query(models.Order).filter(models.Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+        
+    # Only allow deleting if it's pending payment
+    if order.payment_status.lower() != "pending":
+        raise HTTPException(status_code=400, detail="Cannot delete a paid or completed order")
+        
+    # Delete related items and tracking first
+    db.query(models.OrderItem).filter(models.OrderItem.order_id == order_id).delete()
+    db.query(models.Tracking).filter(models.Tracking.order_id == order_id).delete()
+    db.delete(order)
+    db.commit()
+    
+    return {"success": True, "message": "Abandoned order deleted"}

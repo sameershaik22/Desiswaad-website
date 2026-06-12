@@ -7,7 +7,9 @@ router = APIRouter()
 
 @router.get("/")
 def get_products(db: Session = Depends(get_db)):
-    products = db.query(models.Product).all()
+    # Hide discontinued products (Achappam, Janthikalu, Murukku, Masala Boondi)
+    # This keeps them in the database for order history, but hides them from the store.
+    products = db.query(models.Product).filter(models.Product.id.notin_([3, 4, 5, 6])).all()
     return {"products": products}
 
 @router.get("/{slug}")
