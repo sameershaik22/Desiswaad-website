@@ -68,8 +68,21 @@ def send_status_update_email(order, items, status_type: str) -> bool:
         header_text = "Order Cancelled 🚫"
         body_text = "Your order has been successfully cancelled. If you paid online, your refund will be processed shortly."
         color = "#B22222"
+    elif status_type == "Shipped":
+        subject_line = f"[{SITE_NAME}] Order Shipped! 🚚 #{order.id}"
+        header_text = "Order Shipped! 🚚"
+        body_text = f"Your order has been shipped via {order.delivery_partner or 'our delivery partner'}. Track it using your tracking number: {order.tracking_number or 'provided shortly'}."
+        color = "#1565c0"
+    elif status_type == "Delivered":
+        subject_line = f"[{SITE_NAME}] Order Delivered! 🎉 #{order.id}"
+        header_text = "Order Delivered! ✅"
+        body_text = "Your delicious snacks have been delivered! We hope you enjoy the authentic taste of Telangana. Thank you for choosing DesiSwad Foods!"
+        color = "#2e7d32"
     else:
-        return False
+        subject_line = f"[{SITE_NAME}] Order Update #{order.id}"
+        header_text = f"Order {status_type}"
+        body_text = f"Your order status has been updated to {status_type}."
+        color = "#e65100"
 
     html = f"""
     <!DOCTYPE html>
