@@ -4,14 +4,31 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
-export const metadata: Metadata = {
-  title: "DesiSwad Foods – Pure Taste • Pure Trust | Authentic Telangana Snacks",
-  description: "Buy authentic homemade Telangana snacks online – Chekodi, Khara Mixture, Achappam, Janthikalu and more. Fresh, traditional, pan-India delivery. Order now!",
-  keywords: "Telangana snacks, homemade namkeen, Chekodi, Khara Mixture, Achappam, buy Indian snacks online, DesiSwad",
+export const metadata = {
+  title: "DesiSwad Foods – Pure Taste • Pure Trust",
+  description: "Authentic Telangana homemade snacks delivered to your doorstep.",
+
   openGraph: {
     title: "DesiSwad Foods – Pure Taste • Pure Trust",
     description: "Authentic Telangana homemade snacks delivered to your doorstep.",
+    url: "https://www.desiswadfoods.com",
+    siteName: "DesiSwad Foods",
+    images: [
+      {
+        url: "https://www.desiswadfoods.com/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "DesiSwad Foods",
+      },
+    ],
     type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "DesiSwad Foods – Pure Taste • Pure Trust",
+    description: "Authentic Telangana homemade snacks delivered to your doorstep.",
+    images: ["https://www.desiswadfoods.com/logo.png"],
   },
 };
 
