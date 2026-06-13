@@ -838,8 +838,8 @@ export default function MyOrdersPage() {
                               </div>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span style={{ color: 'var(--gray-600)', fontWeight: 600 }}>Status:</span>
-                                <span style={{ padding: '4px 10px', borderRadius: '6px', background: order.payment_status === 'paid' ? '#e8f5e9' : '#fff3e0', color: order.payment_status === 'paid' ? '#2e7d32' : '#e65100', fontSize: '0.78rem', fontWeight: 800, border: `1px solid ${order.payment_status === 'paid' ? '#c8e6c9' : '#ffe082'}` }}>
-                                  {order.payment_status === 'paid' ? '✔ Paid' : 'Pending'}
+                                <span style={{ padding: '4px 10px', borderRadius: '6px', background: order.order_status.toLowerCase() === 'cancelled' ? '#ffebee' : (order.payment_status === 'paid' ? '#e8f5e9' : '#fff3e0'), color: order.order_status.toLowerCase() === 'cancelled' ? '#c62828' : (order.payment_status === 'paid' ? '#2e7d32' : '#e65100'), fontSize: '0.78rem', fontWeight: 800, border: `1px solid ${order.order_status.toLowerCase() === 'cancelled' ? '#ffcdd2' : (order.payment_status === 'paid' ? '#c8e6c9' : '#ffe082')}` }}>
+                                  {order.order_status.toLowerCase() === 'cancelled' ? '🚫 Cancelled' : (order.payment_status === 'paid' ? '✔ Paid' : 'Pending')}
                                 </span>
                               </div>
                               
