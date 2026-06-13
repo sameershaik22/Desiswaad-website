@@ -71,6 +71,72 @@ const STAT_CARDS = [
 
 const WHATSAPP_NUM = '919640497340';
 
+const getWhatsAppMessage = (order: Order) => {
+  const customerName = order.customer_name || 'Customer';
+  const orderId = order.id;
+  const status = STATUS_LABELS[order.order_status] || order.order_status;
+  const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://desiswad.com';
+  const trackingUrl = `${siteUrl}/track?id=${orderId}`;
+  
+  let msg = `*Dear ${customerName},*\n\n`;
+  
+  if (order.order_status === 'placed') {
+    msg += `Thank you for ordering with *DesiSwad Foods*! 🌿\n\n`;
+    msg += `We have received your order *#${orderId}* and it is currently *Pending Confirmation*.\n\n`;
+    msg += `*Order Summary:*\n`;
+    order.items?.forEach(item => {
+      msg += `• ${item.name} (${item.weight}) x ${item.qty}\n`;
+    });
+    msg += `\n*Total Amount:* ₹${order.total} (${order.payment_mode})\n\n`;
+    msg += `You can track your order here: ${trackingUrl}\n\n`;
+    msg += `We will notify you once your order is confirmed! Happy eating! 🍲`;
+  } else if (order.order_status === 'confirmed') {
+    msg += `Great news! Your order *#${orderId}* with *DesiSwad Foods* has been *Confirmed*! 🍳\n\n`;
+    msg += `Our kitchen team is starting to prepare your delicious items. We will dispatch it soon!\n\n`;
+    msg += `*Delivery Address:* ${order.city}, ${order.state} - ${order.pincode}\n`;
+    msg += `*Payment:* ${order.payment_mode} (${order.payment_status === 'paid' ? 'Paid' : 'Pending'})\n\n`;
+    msg += `Track preparation progress here: ${trackingUrl}\n\n`;
+    msg += `Thank you for choosing quality, pure taste! 🌿`;
+  } else if (order.order_status === 'processing') {
+    msg += `Your order *#${orderId}* is now being *Prepared & Packed*! 📦\n\n`;
+    msg += `We are making sure everything is freshly packed and ready for dispatch. We will share courier details shortly.\n\n`;
+    msg += `Track live status here: ${trackingUrl}\n\n`;
+    msg += `DesiSwad Foods — Pure Taste, Pure Quality! 🌿`;
+  } else if (order.order_status === 'shipped') {
+    msg += `Your order *#${orderId}* has been *Dispatched / Sent Out for Delivery*! 🚚\n\n`;
+    if (order.delivery_partner) {
+      msg += `*Partner:* ${order.delivery_partner}\n`;
+    }
+    if (order.tracking_number) {
+      msg += `*Tracking ID:* ${order.tracking_number}\n`;
+    }
+    if (order.expected_delivery_date) {
+      msg += `*Expected Delivery:* ${order.expected_delivery_date}\n`;
+    }
+    msg += `\nTrack your shipment live here: ${trackingUrl}\n\n`;
+    if (order.payment_mode === 'COD') {
+      msg += `*COD Notice:* Please keep *₹${order.total}* ready to hand over to the delivery partner.\n\n`;
+    }
+    msg += `Thank you! — DesiSwad Foods 🌿`;
+  } else if (order.order_status === 'delivered') {
+    msg += `Yum! Your order *#${orderId}* has been *Delivered* successfully! 🎉🍲\n\n`;
+    msg += `We hope you enjoy the authentic home-style flavors. We would love to hear your feedback!\n\n`;
+    msg += `Share your review with us or view order summary here: ${trackingUrl}\n\n`;
+    msg += `Thank you for supporting *DesiSwad Foods*! Refer your friends and family! 🌿`;
+  } else if (order.order_status === 'cancelled') {
+    msg += `Your order *#${orderId}* has been *Cancelled*. 🚫\n\n`;
+    msg += `If you paid online, the refund will be initiated within 3-5 business days. For any queries, please reach out to us at support@desiswad.com.\n\n`;
+    msg += `View order status details: ${trackingUrl}\n\n`;
+    msg += `We hope to serve you better next time. — DesiSwad Foods`;
+  } else {
+    msg += `Update on your order *#${orderId}* with *DesiSwad Foods*: status has changed to *${status}*.\n\n`;
+    msg += `Track here: ${trackingUrl}\n\n`;
+    msg += `For support, WhatsApp us back! 🌿`;
+  }
+  
+  return encodeURIComponent(msg);
+};
+
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
@@ -528,7 +594,7 @@ export default function AdminDashboard() {
                                 </button>
                               </div>
                               <a
-                                href={`https://wa.me/${o.phone?.replace(/\D/g, '') || WHATSAPP_NUM}?text=Hi ${encodeURIComponent(o.customer_name || 'Customer')}! 👋 This is DesiSwad Foods. Your order *${o.id}* status: *${STATUS_LABELS[o.order_status]}*. Track: http://localhost:3000/track?id=${o.id}`}
+                                href={`https://wa.me/${o.phone?.replace(/\D/g, '') || WHATSAPP_NUM}?text=${getWhatsAppMessage(o)}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 style={{ padding: '6px 12px', border: 'none', borderRadius: 6, background: '#25D366', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: '0.78rem', textDecoration: 'none', textAlign: 'center', display: 'block' }}
@@ -680,7 +746,7 @@ export default function AdminDashboard() {
                     📦 View Tracking Page
                   </a>
                   <a
-                    href={`https://wa.me/${selectedOrder.phone?.replace(/\D/g, '') || WHATSAPP_NUM}?text=Hi ${encodeURIComponent(selectedOrder.customer_name || 'Customer')}! 👋 DesiSwad Foods here. Your order *${selectedOrder.id}* is currently *${STATUS_LABELS[selectedOrder.order_status]}*. Track your order: http://localhost:3000/track?id=${selectedOrder.id}`}
+                    href={`https://wa.me/${selectedOrder.phone?.replace(/\D/g, '') || WHATSAPP_NUM}?text=${getWhatsAppMessage(selectedOrder)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{ flex: 1, textAlign: 'center', padding: '12px 16px', background: '#25D366', color: '#fff', borderRadius: 8, fontWeight: 700, textDecoration: 'none', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
