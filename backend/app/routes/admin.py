@@ -68,7 +68,7 @@ def update_order_status(order_id: str, status_req: schemas.OrderStatusUpdate, db
 
     # Send email notification to customer
     # Always email for Shipped/Delivered/Cancelled; only if notify_email=True for others
-    auto_notify = status_req.status in ("Shipped", "Delivered", "Cancelled")
+    auto_notify = status_req.status in ("Confirmed", "Shipped", "Delivered", "Cancelled")
     if auto_notify or status_req.notify_email:
         try:
             if status_req.status in ("Confirmed", "Cancelled"):
