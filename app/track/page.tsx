@@ -339,36 +339,44 @@ function TrackPageContent() {
             </div>
 
             {/* Progress Bar */}
-            <div style={{ background: '#fff', borderRadius: 16, padding: '28px 24px', marginBottom: 20, boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1px solid #e8e8e8' }}>
-              <h3 style={{ margin: '0 0 28px', fontWeight: 700, color: '#333', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Delivery Progress</h3>
-              <div style={{ display: 'flex', alignItems: 'flex-start', position: 'relative' }}>
-                {STATUS_STEPS.map((status, idx) => {
-                  const isDone = idx <= currentStatusIdx;
-                  const isCurrent = idx === currentStatusIdx;
-                  const color = isDone ? STATUS_COLORS[status] : '#e0e0e0';
-                  return (
-                    <div key={status} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-                      {/* Connector line */}
-                      {idx < STATUS_STEPS.length - 1 && (
-                        <div style={{ position: 'absolute', top: 20, left: '50%', width: '100%', height: 3, background: idx < currentStatusIdx ? STATUS_COLORS[STATUS_STEPS[idx + 1]] : '#e0e0e0', zIndex: 0, transition: 'background 0.5s' }} />
-                      )}
-                      {/* Circle */}
-                      <div style={{
-                        width: 40, height: 40, borderRadius: '50%', background: isDone ? color : '#f5f5f5',
-                        border: `3px solid ${color}`, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '1.1rem', zIndex: 1, transition: 'all 0.4s',
-                        boxShadow: isCurrent ? `0 0 0 6px ${color}22` : 'none',
-                      }}>
-                        {isDone ? (isCurrent ? STATUS_ICONS[status] : '✓') : <span style={{ color: '#bbb', fontSize: '0.85rem' }}>{idx + 1}</span>}
+            {/* Progress Bar */}
+            {order.order_status !== 'cancelled' && order.order_status !== 'Cancelled' ? (
+              <div style={{ background: '#fff', borderRadius: 16, padding: '28px 24px', marginBottom: 20, boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1px solid #e8e8e8' }}>
+                <h3 style={{ margin: '0 0 28px', fontWeight: 700, color: '#333', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Delivery Progress</h3>
+                <div style={{ display: 'flex', alignItems: 'flex-start', position: 'relative' }}>
+                  {STATUS_STEPS.map((status, idx) => {
+                    const isDone = idx <= currentStatusIdx;
+                    const isCurrent = idx === currentStatusIdx;
+                    const color = isDone ? STATUS_COLORS[status] : '#e0e0e0';
+                    return (
+                      <div key={status} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+                        {/* Connector line */}
+                        {idx < STATUS_STEPS.length - 1 && (
+                          <div style={{ position: 'absolute', top: 20, left: '50%', width: '100%', height: 3, background: idx < currentStatusIdx ? STATUS_COLORS[STATUS_STEPS[idx + 1]] : '#e0e0e0', zIndex: 0, transition: 'background 0.5s' }} />
+                        )}
+                        {/* Circle */}
+                        <div style={{
+                          width: 40, height: 40, borderRadius: '50%', background: isDone ? color : '#f5f5f5',
+                          border: `3px solid ${color}`, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: '1.1rem', zIndex: 1, transition: 'all 0.4s',
+                          boxShadow: isCurrent ? `0 0 0 6px ${color}22` : 'none',
+                        }}>
+                          {isDone ? (isCurrent ? STATUS_ICONS[status] : '✓') : <span style={{ color: '#bbb', fontSize: '0.85rem' }}>{idx + 1}</span>}
+                        </div>
+                        <p style={{ marginTop: 10, fontSize: '0.75rem', fontWeight: isCurrent ? 700 : 600, color: isDone ? color : '#bbb', textAlign: 'center', lineHeight: 1.3 }}>
+                          {STATUS_LABELS[status]}
+                        </p>
                       </div>
-                      <p style={{ marginTop: 10, fontSize: '0.75rem', fontWeight: isCurrent ? 700 : 600, color: isDone ? color : '#bbb', textAlign: 'center', lineHeight: 1.3 }}>
-                        {STATUS_LABELS[status]}
-                      </p>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div style={{ background: '#fce4ec', borderRadius: 16, padding: '24px', marginBottom: 20, boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1px solid #ffcdd2', textAlign: 'center' }}>
+                <h3 style={{ margin: 0, fontWeight: 800, color: '#c62828', fontSize: '1.2rem' }}>🚫 Order Cancelled</h3>
+                <p style={{ margin: '8px 0 0', color: '#d32f2f', fontSize: '0.9rem' }}>This order has been cancelled. If this was a mistake, please contact our support team on WhatsApp.</p>
+              </div>
+            )}
 
             {/* Timeline */}
             <div style={{ background: '#fff', borderRadius: 16, padding: 24, marginBottom: 20, boxShadow: '0 4px 16px rgba(0,0,0,0.06)', border: '1px solid #e8e8e8' }}>
@@ -388,7 +396,7 @@ function TrackPageContent() {
                       </p>
                       <p style={{ margin: '0 0 2px', fontSize: '0.85rem', color: '#666' }}>{event.message}</p>
                       <p style={{ margin: 0, fontSize: '0.75rem', color: '#aaa' }}>
-                        {new Date(event.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })}
+                        {new Date(event.timestamp || (event as any).created_at || '').toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })}
                       </p>
                     </div>
                   </div>

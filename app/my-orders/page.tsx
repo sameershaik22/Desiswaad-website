@@ -887,7 +887,7 @@ export default function MyOrdersPage() {
                                     </p>
                                     <p style={{ margin: '2px 0 0', color: 'var(--gray-600)', fontSize: '0.82rem', lineHeight: 1.4 }}>{ev.message}</p>
                                     <p style={{ margin: '4px 0 0', color: 'var(--gray-400)', fontSize: '0.72rem', fontWeight: 600 }}>
-                                      {new Date(ev.timestamp).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+                                      {new Date(ev.timestamp || (ev as any).created_at || '').toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
                                     </p>
                                   </div>
                                 </div>

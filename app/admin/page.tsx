@@ -429,8 +429,8 @@ export default function AdminDashboard() {
                         </td>
                         {/* Payment */}
                         <td style={{ padding: '14px 16px' }}>
-                          <span style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 4, fontSize: '0.72rem', fontWeight: 700, background: o.payment_status === 'paid' ? '#e8f5e9' : '#fff3e0', color: o.payment_status === 'paid' ? '#2e7d32' : '#e65100' }}>
-                            {o.payment_status === 'paid' ? '✔ PAID' : 'PENDING'}
+                          <span style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 4, fontSize: '0.72rem', fontWeight: 700, background: o.order_status === 'Cancelled' || o.order_status === 'cancelled' ? '#ffebee' : (o.payment_status === 'paid' ? '#e8f5e9' : '#fff3e0'), color: o.order_status === 'Cancelled' || o.order_status === 'cancelled' ? '#c62828' : (o.payment_status === 'paid' ? '#2e7d32' : '#e65100') }}>
+                            {o.order_status === 'Cancelled' || o.order_status === 'cancelled' ? '🚫 CANCELLED' : (o.payment_status === 'paid' ? '✔ PAID' : 'PENDING')}
                           </span>
                           <p style={{ margin: '3px 0 0', fontSize: '0.75rem', color: '#888' }}>{o.payment_mode}</p>
                         </td>
@@ -512,8 +512,8 @@ export default function AdminDashboard() {
                 <div style={{ background: '#f9fafb', borderRadius: 10, padding: 16 }}>
                   <p style={{ margin: '0 0 10px', fontWeight: 700, color: '#333', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>💳 Payment</p>
                   <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
-                    <span style={{ padding: '4px 10px', borderRadius: 6, fontSize: '0.8rem', fontWeight: 700, background: selectedOrder.payment_status === 'paid' ? '#e8f5e9' : '#fff3e0', color: selectedOrder.payment_status === 'paid' ? '#2e7d32' : '#e65100' }}>
-                      {selectedOrder.payment_status === 'paid' ? '✔ PAID' : 'PENDING'}
+                    <span style={{ padding: '4px 10px', borderRadius: 6, fontSize: '0.8rem', fontWeight: 700, background: selectedOrder.order_status === 'Cancelled' || selectedOrder.order_status === 'cancelled' ? '#ffebee' : (selectedOrder.payment_status === 'paid' ? '#e8f5e9' : '#fff3e0'), color: selectedOrder.order_status === 'Cancelled' || selectedOrder.order_status === 'cancelled' ? '#c62828' : (selectedOrder.payment_status === 'paid' ? '#2e7d32' : '#e65100') }}>
+                      {selectedOrder.order_status === 'Cancelled' || selectedOrder.order_status === 'cancelled' ? '🚫 CANCELLED' : (selectedOrder.payment_status === 'paid' ? '✔ PAID' : 'PENDING')}
                     </span>
                     <span style={{ padding: '4px 10px', borderRadius: 6, fontSize: '0.8rem', fontWeight: 700, background: '#f5f5f5', color: '#555' }}>
                       {selectedOrder.payment_mode}
@@ -571,7 +571,7 @@ export default function AdminDashboard() {
                       <div style={{ paddingBottom: 12 }}>
                         <p style={{ margin: 0, fontWeight: 700, color: '#222', fontSize: '0.875rem' }}>{STATUS_LABELS[t.status] || t.status}</p>
                         <p style={{ margin: '2px 0', fontSize: '0.8rem', color: '#666' }}>{t.message}</p>
-                        <p style={{ margin: 0, fontSize: '0.75rem', color: '#aaa' }}>{new Date(t.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>
+                        <p style={{ margin: 0, fontSize: '0.75rem', color: '#aaa' }}>{new Date(t.timestamp || (t as any).created_at || '').toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>
                       </div>
                     </div>
                   ))}
