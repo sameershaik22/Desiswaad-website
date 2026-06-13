@@ -68,13 +68,16 @@ def update_order_status(order_id: str, status_req: schemas.OrderStatusUpdate, db
 
     # Send email notification to customer
     # Always email for Shipped/Delivered/Cancelled; only if notify_email=True for others
-    auto_notify = status_req.status in ("Confirmed", "Shipped", "Delivered", "Cancelled")
+    status_lower = status_req.status.lower()
+    auto_notify = status_lower in ("confirmed", "shipped", "delivered", "cancelled")
     if auto_notify or status_req.notify_email:
         try:
-            if status_req.status in ("Confirmed", "Cancelled"):
+            if status_lower in ("confirmed", "cancelled"):
                 from app.routes.email_service import send_status_update_email
                 items = db.query(models.OrderItem).filter(models.OrderItem.order_id == order_id).all()
-                send_status_update_email(order, items, status_req.status)
+                # Pass the capitalized version to the email template for display
+                display_status = "Confirmed" if status_lower == "confirmed" else "Cancelled"
+                send_status_update_email(order, items, display_status)
             else:
                 send_order_status_update(order, status_req.status, status_req.message or "")
         except Exception as e:
