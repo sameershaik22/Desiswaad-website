@@ -19,7 +19,7 @@ function OrderSuccessScreen({ orderId, paymentMode, grandTotal }: { orderId: str
   const router = useRouter();
   // Phase: 0=processing, 1=payment-success, 2=order-confirmed
   const [phase, setPhase] = useState(0);
-  const [countdown, setCountdown] = useState(8);
+  const [countdown, setCountdown] = useState(5);
   const [truckPos, setTruckPos] = useState(-10); // percentage across screen
 
   // Phase transitions
@@ -47,14 +47,14 @@ function OrderSuccessScreen({ orderId, paymentMode, grandTotal }: { orderId: str
     const interval = setInterval(() => {
       setCountdown(prev => {
         if (prev <= 1) {
-          router.push(`/track?id=${orderId}`);
+          router.push(`/my-orders`);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [phase, orderId, router]);
+  }, [phase, router]);
 
   // Phase 0: Processing
   if (phase === 0) {

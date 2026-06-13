@@ -90,11 +90,3 @@ def _mark_paid(ds_order_id: str, razorpay_payment_id: str, db: Session, backgrou
         )
         db.add(tracking)
         db.commit()
-        
-        # Send order confirmation email now that it is paid via background task
-        try:
-            from app.routes.email_service import send_order_confirmation
-            saved_items = db.query(models.OrderItem).filter(models.OrderItem.order_id == ds_order_id).all()
-            background_tasks.add_task(send_order_confirmation, order, saved_items)
-        except Exception as e:
-            print(f"[email] Error queuing confirmation: {e}")

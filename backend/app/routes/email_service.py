@@ -43,12 +43,12 @@ def _send(to_email: str, subject: str, html_body: str) -> bool:
         return False
 
 
-def send_order_confirmation(order, items) -> bool:
-    """Send order confirmation email to customer after placing order."""
+def send_status_update_email(order, items, status_type: str) -> bool:
+    """Send order status email (confirmed or cancelled)."""
     items_rows = "".join(
         f"""
         <tr>
-          <td style="padding:8px 12px;border-bottom:1px solid #f0f0f0">{i.name}{' (' + i.weight + ')' if i.weight else ''}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #f0f0f0">{i.name}{' (' + i.weight + ')' if getattr(i, 'weight', '') else ''}</td>
           <td style="padding:8px 12px;border-bottom:1px solid #f0f0f0;text-align:center">{i.qty}</td>
           <td style="padding:8px 12px;border-bottom:1px solid #f0f0f0;text-align:right">₹{i.price * i.qty:.0f}</td>
         </tr>
@@ -56,9 +56,20 @@ def send_order_confirmation(order, items) -> bool:
         for i in items
     )
 
-    payment_label = "Cash on Delivery" if order.payment_mode == "COD" else "Online (Razorpay)"
     track_url = f"{SITE_URL}/track?id={order.id}"
-    whatsapp_url = f"https://wa.me/{os.getenv('NEXT_PUBLIC_WHATSAPP_NUMBER','919640497340')}?text=Hi! My Order ID is {order.id}"
+    
+    if status_type == "Confirmed":
+        subject_line = f"[{SITE_NAME}] Order Confirmed! #{order.id}"
+        header_text = "Order Confirmed! 🎉"
+        body_text = "Great news! Our kitchen has officially confirmed your order and is preparing your fresh authentic snacks!"
+        color = "#1E5B3A"
+    elif status_type == "Cancelled":
+        subject_line = f"[{SITE_NAME}] Order Cancelled #{order.id}"
+        header_text = "Order Cancelled 🚫"
+        body_text = "Your order has been successfully cancelled. If you paid online, your refund will be processed shortly."
+        color = "#B22222"
+    else:
+        return False
 
     html = f"""
     <!DOCTYPE html>
@@ -67,17 +78,16 @@ def send_order_confirmation(order, items) -> bool:
     <body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,sans-serif">
       <div style="max-width:600px;margin:32px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08)">
         <!-- Header -->
-        <div style="background:linear-gradient(135deg,#1E5B3A,#2d7a4f);padding:32px 40px;text-align:center">
+        <div style="background:{color};padding:32px 40px;text-align:center">
           <h1 style="color:#D4AF37;margin:0;font-size:26px;font-weight:800">🌿 {SITE_NAME}</h1>
-          <p style="color:rgba(255,255,255,.8);margin:8px 0 0;font-size:15px">Order Confirmed! 🎉</p>
+          <p style="color:rgba(255,255,255,.8);margin:8px 0 0;font-size:15px">{header_text}</p>
         </div>
 
         <!-- Body -->
         <div style="padding:32px 40px">
           <p style="color:#333;font-size:16px">Hi <strong>{order.customer_name}</strong>,</p>
           <p style="color:#555;font-size:14px;line-height:1.6">
-            Thank you for your order! We've received it and it's being prepared with love.
-            Your authentic Telangana snacks are on their way. 🙏
+            {body_text}
           </p>
 
           <!-- Order ID Box -->
@@ -98,67 +108,15 @@ def send_order_confirmation(order, items) -> bool:
             <tbody>{items_rows}</tbody>
           </table>
 
-          <!-- Totals -->
-          <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
-            <tr>
-              <td style="padding:6px 0;color:#666;font-size:14px">Subtotal</td>
-              <td style="padding:6px 0;color:#333;font-size:14px;text-align:right">₹{order.subtotal:.0f}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 0;color:#666;font-size:14px">Shipping</td>
-              <td style="padding:6px 0;color:#333;font-size:14px;text-align:right">₹{order.shipping:.0f}</td>
-            </tr>
-            {"<tr><td style='padding:6px 0;color:#666;font-size:14px'>COD Charge</td><td style='padding:6px 0;color:#333;font-size:14px;text-align:right'>₹" + str(int(order.cod_charge)) + "</td></tr>" if order.cod_charge else ""}
-            <tr style="border-top:2px solid #e0e0e0">
-              <td style="padding:10px 0;color:#1E5B3A;font-size:16px;font-weight:800">Total</td>
-              <td style="padding:10px 0;color:#1E5B3A;font-size:16px;font-weight:800;text-align:right">₹{order.total:.0f}</td>
-            </tr>
-          </table>
-
-          <!-- Delivery Address -->
-          <div style="background:#f9f9f9;border-radius:8px;padding:16px 20px;margin-bottom:24px">
-            <p style="margin:0 0 8px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px;font-weight:700">📦 Delivery Address</p>
-            <p style="margin:0;color:#333;font-size:14px;line-height:1.6">
-              {order.address}, {order.city}, {order.state} - {order.pincode}, {order.country}
-            </p>
+          <div style="text-align:center;margin-top:32px">
+            <a href="{track_url}" style="background:#D4AF37;color:#fff;text-decoration:none;padding:14px 28px;border-radius:30px;font-size:16px;font-weight:700;display:inline-block">Track Your Order</a>
           </div>
-
-          <!-- Payment & Status -->
-          <div style="display:flex;gap:12px;margin-bottom:28px">
-            <div style="flex:1;background:#f0f7f4;border-radius:8px;padding:12px 16px;text-align:center">
-              <p style="margin:0 0 4px;font-size:11px;color:#999;text-transform:uppercase;font-weight:700">Payment</p>
-              <p style="margin:0;font-size:14px;font-weight:700;color:#1E5B3A">{payment_label}</p>
-            </div>
-            <div style="flex:1;background:#fff7ed;border-radius:8px;padding:12px 16px;text-align:center">
-              <p style="margin:0 0 4px;font-size:11px;color:#999;text-transform:uppercase;font-weight:700">Status</p>
-              <p style="margin:0;font-size:14px;font-weight:700;color:#c2410c">Order Confirmed ✅</p>
-            </div>
-          </div>
-
-          <!-- CTA Buttons -->
-          <div style="text-align:center">
-            <a href="{track_url}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#1E5B3A,#2d7a4f);color:#fff;text-decoration:none;border-radius:10px;font-weight:700;font-size:15px;margin-bottom:12px">
-              📦 Track My Order
-            </a>
-            <br>
-            <a href="{whatsapp_url}" style="display:inline-block;padding:10px 24px;background:#25D366;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px">
-              💬 WhatsApp Support
-            </a>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div style="background:#f8f8f8;padding:20px 40px;text-align:center;border-top:1px solid #eee">
-          <p style="margin:0;color:#aaa;font-size:12px">
-            © 2025 {SITE_NAME} · Authentic Telangana Snacks<br>
-            Questions? Reply to this email or WhatsApp us.
-          </p>
         </div>
       </div>
     </body>
     </html>
     """
-    return _send(order.email, f"✅ Order Confirmed — #{order.id} | {SITE_NAME}", html)
+    return _send(order.email, subject_line, html)
 
 
 def send_order_status_update(order, new_status: str, message: str = "") -> bool:

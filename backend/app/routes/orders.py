@@ -7,7 +7,7 @@ import time
 
 import os
 from jose import jwt, JWTError
-from app.routes.email_service import send_order_confirmation
+from app.routes.email_service import send_status_update_email
 
 router = APIRouter()
 SECRET_KEY = os.getenv("JWT_SECRET", "secret")
@@ -107,16 +107,7 @@ def create_order(request: Request, order: schemas.OrderCreate, background_tasks:
     db.add(tracking)
     
     db.commit()
-    # Re-query to get the full order with relationships for email
-    saved_order = db.query(models.Order).filter(models.Order.id == order_id).first()
-    saved_items = db.query(models.OrderItem).filter(models.OrderItem.order_id == order_id).all()
-    # Send order confirmation email to customer via background task
-    # Only send immediately for non-Online (e.g. COD) orders. Online orders receive it after verification.
-    if order.payment_mode != "Online":
-        try:
-            background_tasks.add_task(send_order_confirmation, saved_order, saved_items)
-        except Exception as e:
-            print(f"[email] Error queuing confirmation: {e}")
+    db.commit()
     return {"success": True, "orderId": order_id}
 
 @router.get("/{order_id}")
@@ -158,6 +149,46 @@ def get_my_orders(request: Request, db: Session = Depends(get_db)):
         (models.Order.user_id == user_id) | (models.Order.email == user.email)
     ).order_by(models.Order.created_at.desc()).all()
     return {"orders": [serialize_order(o) for o in orders]}
+
+from pydantic import BaseModel
+class CancelRequest(BaseModel):
+    reason: str
+
+@router.post("/user/cancel/{order_id}")
+def cancel_order(order_id: str, payload: CancelRequest, background_tasks: BackgroundTasks, request: Request, db: Session = Depends(get_db)):
+    user_id = get_current_user_id(request, db)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+        
+    order = db.query(models.Order).filter(models.Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+        
+    if order.user_id != user_id:
+        raise HTTPException(status_code=403, detail="Forbidden")
+        
+    status_lower = order.status.lower()
+    if status_lower in ["shipped", "out for delivery", "delivered", "cancelled"]:
+        raise HTTPException(status_code=400, detail="Order cannot be cancelled at this stage.")
+        
+    order.status = "Cancelled"
+    
+    tracking = models.Tracking(
+        order_id=order_id,
+        status="Cancelled",
+        message=f"User Cancelled: {payload.reason}"
+    )
+    db.add(tracking)
+    db.commit()
+    
+    try:
+        from app.routes.email_service import send_status_update_email
+        saved_items = db.query(models.OrderItem).filter(models.OrderItem.order_id == order_id).all()
+        background_tasks.add_task(send_status_update_email, order, saved_items, "Cancelled")
+    except Exception as e:
+        print(f"[email] Error queuing cancel email: {e}")
+    
+    return {"success": True, "message": "Order cancelled successfully."}
 
 @router.get("/user/my-orders/{order_id}")
 def get_user_order(order_id: str, request: Request, db: Session = Depends(get_db)):

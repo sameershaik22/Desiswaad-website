@@ -71,7 +71,12 @@ def update_order_status(order_id: str, status_req: schemas.OrderStatusUpdate, db
     auto_notify = status_req.status in ("Shipped", "Delivered", "Cancelled")
     if auto_notify or status_req.notify_email:
         try:
-            send_order_status_update(order, status_req.status, status_req.message or "")
+            if status_req.status in ("Confirmed", "Cancelled"):
+                from app.routes.email_service import send_status_update_email
+                items = db.query(models.OrderItem).filter(models.OrderItem.order_id == order_id).all()
+                send_status_update_email(order, items, status_req.status)
+            else:
+                send_order_status_update(order, status_req.status, status_req.message or "")
         except Exception as e:
             print(f"[email] Error sending status update: {e}")
 

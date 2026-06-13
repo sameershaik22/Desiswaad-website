@@ -235,6 +235,14 @@ export default function MyOrdersPage() {
   const [reviewError, setReviewError] = useState('');
   const [reviewSuccess, setReviewSuccess] = useState(false);
 
+  // Cancel Modal State
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
+  const [cancelReason, setCancelReason] = useState('');
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [cancelError, setCancelError] = useState('');
+  const [cancelSuccess, setCancelSuccess] = useState(false);
+
   useEffect(() => {
     if (!isLoggedIn()) {
       router.push('/login?redirect=/my-orders');
@@ -373,6 +381,38 @@ export default function MyOrdersPage() {
       setReviewError(err.message);
     } finally {
       setReviewLoading(false);
+    }
+  };
+
+  const openCancelModal = (orderId: string) => {
+    setCancellingOrderId(orderId);
+    setCancelReason('Order Created by Mistake');
+    setCancelError('');
+    setCancelSuccess(false);
+    setCancelModalOpen(true);
+  };
+
+  const handleCancelOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!cancellingOrderId) return;
+    setCancelLoading(true);
+    setCancelError('');
+    try {
+      const res = await fetch(`/api/orders/user/cancel/${cancellingOrderId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason: cancelReason }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || data.error || 'Failed to cancel order');
+      setCancelSuccess(true);
+      // Update local state to reflect cancellation instantly
+      setOrders(prev => prev.map(o => o.id === cancellingOrderId ? { ...o, order_status: 'Cancelled' } : o));
+      setTimeout(() => setCancelModalOpen(false), 2000);
+    } catch (err: any) {
+      setCancelError(err.message);
+    } finally {
+      setCancelLoading(false);
     }
   };
 
@@ -969,10 +1009,9 @@ export default function MyOrdersPage() {
                           </button>
 
                           {canCancel(order) && (
-                            <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919640497340'}?text=Hi! I would like to cancel my order %23${order.id}. Please assist.`}
-                              target="_blank" rel="noopener noreferrer" className="btn-action-danger">
+                            <button onClick={() => openCancelModal(order.id)} className="btn-action-danger">
                               🚫 Cancel Order
-                            </a>
+                            </button>
                           )}
 
                           <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919640497340'}?text=Hi! I have a question about my order %23${order.id}`}
@@ -1083,6 +1122,53 @@ export default function MyOrdersPage() {
                 <button type="submit" disabled={reviewLoading} className="btn-action-primary" style={{ padding: '14px', fontSize: '0.95rem' }}>
                   {reviewLoading ? 'Submitting...' : '⭐ Submit Review'}
                 </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+      {/* Cancel Order Modal */}
+      {cancelModalOpen && cancellingOrderId && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+          <div style={{ background: '#fff', borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '460px', margin: '20px', position: 'relative', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--cream-dark)' }}>
+            <button onClick={() => setCancelModalOpen(false)} style={{ position: 'absolute', top: 20, right: 20, background: 'none', border: 'none', fontSize: '1.8rem', cursor: 'pointer', color: '#888', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
+            <h2 style={{ fontSize: '1.35rem', marginBottom: 6, fontWeight: 800, color: 'var(--red)', fontFamily: 'var(--font-heading)' }}>🚫 Cancel Order</h2>
+            <p style={{ color: 'var(--gray-600)', marginBottom: 24, fontSize: '0.92rem' }}>
+              Are you sure you want to cancel Order <strong>{cancellingOrderId}</strong>?
+            </p>
+
+            {cancelSuccess ? (
+              <div style={{ textAlign: 'center', padding: '36px 0' }}>
+                <div style={{ fontSize: '4rem', marginBottom: 16 }}>✅</div>
+                <h3 style={{ color: 'var(--green)', fontSize: '1.25rem', marginBottom: 8, fontWeight: 800 }}>Order Cancelled</h3>
+                <p style={{ color: 'var(--gray-600)', fontSize: '0.9rem' }}>Your order has been successfully cancelled.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleCancelOrder} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: 8, fontWeight: 700, fontSize: '0.85rem', color: 'var(--gray-800)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Why are you cancelling? *</label>
+                  <select value={cancelReason} onChange={e => setCancelReason(e.target.value)} required
+                    style={{ width: '100%', padding: '12px 14px', border: '1px solid var(--gray-200)', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box', outline: 'none', transition: 'border 0.2s', background: '#fff' }}>
+                    <option value="Order Created by Mistake">Order Created by Mistake</option>
+                    <option value="Item(s) would not arrive on time">Item(s) would not arrive on time</option>
+                    <option value="Shipping cost too high">Shipping cost too high</option>
+                    <option value="Found cheaper somewhere else">Found cheaper somewhere else</option>
+                    <option value="Need to change shipping address">Need to change shipping address</option>
+                    <option value="Need to change payment method">Need to change payment method</option>
+                    <option value="Other">Other Reason</option>
+                  </select>
+                </div>
+                
+                {cancelError && <p style={{ color: 'var(--red)', fontSize: '0.85rem', margin: 0 }}>⚠️ {cancelError}</p>}
+                
+                <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+                  <button type="button" onClick={() => setCancelModalOpen(false)} className="btn-action-secondary" style={{ flex: 1, padding: '14px', fontSize: '0.95rem' }}>
+                    Keep Order
+                  </button>
+                  <button type="submit" disabled={cancelLoading} className="btn-action-danger" style={{ flex: 1, padding: '14px', fontSize: '0.95rem', opacity: cancelLoading ? 0.7 : 1 }}>
+                    {cancelLoading ? 'Cancelling...' : 'Confirm Cancel'}
+                  </button>
+                </div>
               </form>
             )}
           </div>

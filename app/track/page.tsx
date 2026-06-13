@@ -5,11 +5,13 @@ import { useSearchParams, useRouter } from 'next/navigation';
 
 const STATUS_STEPS = ['placed', 'confirmed', 'processing', 'shipped', 'delivered'];
 const STATUS_LABELS: Record<string, string> = {
-  placed:     'Pending',
+  placed:     'Order Placed',
   confirmed:  'Confirmed',
   processing: 'Preparing',
   shipped:    'Out for Delivery',
   delivered:  'Delivered',
+  cancelled:  'Cancelled',
+  Cancelled:  'Cancelled',
 };
 const STATUS_ICONS: Record<string, string> = {
   placed:     '📋',
@@ -17,6 +19,8 @@ const STATUS_ICONS: Record<string, string> = {
   processing: '👨‍🍳',
   shipped:    '🚚',
   delivered:  '🎉',
+  cancelled:  '🚫',
+  Cancelled:  '🚫',
 };
 const STATUS_COLORS: Record<string, string> = {
   placed:     '#f59e0b',
@@ -24,6 +28,8 @@ const STATUS_COLORS: Record<string, string> = {
   processing: '#f97316',
   shipped:    '#10b981',
   delivered:  '#1E5B3A',
+  cancelled:  '#c62828',
+  Cancelled:  '#c62828',
 };
 
 interface TrackingEvent { status: string; message: string; timestamp: string; }
@@ -161,7 +167,8 @@ function TrackPageContent() {
     }
   };
 
-  const currentStatusIdx = order ? STATUS_STEPS.indexOf(order.order_status) : -1;
+  const normalizedStatus = order?.order_status?.toLowerCase() === 'pending' ? 'placed' : order?.order_status?.toLowerCase() || '';
+  const currentStatusIdx = STATUS_STEPS.indexOf(normalizedStatus);
   const whatsappNum = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919640497340';
 
   return (
