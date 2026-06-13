@@ -56,21 +56,7 @@ def update_order_status(order_id: str, status_req: schemas.OrderStatusUpdate, db
         order.payment_status = 'paid'
 
     tracking_message = status_req.message
-    # Trigger Delivery API if moving to Shipped/Out for Delivery and no AWB assigned yet
-    if status_req.status.lower() in ['shipped', 'out for delivery'] and not order.awb_number:
-        from app.delivery_service import assign_delivery_partner
-        try:
-            delivery_data = assign_delivery_partner(order)
-            order.delivery_partner = delivery_data.get("partner")
-            order.awb_number = delivery_data.get("awb_number")
-            order.tracking_number = delivery_data.get("tracking_number")
-            order.expected_delivery_date = delivery_data.get("expected_delivery_date")
-            tracking_message = tracking_message or f"Order assigned to {order.delivery_partner}. AWB: {order.awb_number}"
-        except Exception as e:
-            # If delivery assignment fails, log it but don't crash the entire update,
-            # or optionally you can raise HTTPException to block the status change.
-            print(f"Failed to assign delivery: {e}")
-            tracking_message = tracking_message or f"Status updated, but delivery assignment failed: {e}"
+    # (Delhivery automated assignment has been removed as per user request)
 
     tracking = models.Tracking(
         order_id=order_id,

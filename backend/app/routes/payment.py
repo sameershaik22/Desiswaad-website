@@ -37,8 +37,10 @@ def create_payment_order(req: schemas.PaymentCreate):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
+
 @router.post("/verify")
-def verify_payment(req: schemas.PaymentVerify, db: Session = Depends(get_db)):
+def verify_payment(req: schemas.PaymentVerify, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     """
     Verify Razorpay payment signature using HMAC-SHA256.
     SECURITY-CRITICAL: prevents fake/forged payment confirmations.
@@ -51,7 +53,7 @@ def verify_payment(req: schemas.PaymentVerify, db: Session = Depends(get_db)):
     if not RAZORPAY_SECRET or RAZORPAY_SECRET == "YourKeySecretHere":
         # Still update DB in dev mode so the UI shows "PAID"
         if req.order_id:
-            _mark_paid(req.order_id, req.razorpay_payment_id, db)
+            _mark_paid(req.order_id, req.razorpay_payment_id, db, background_tasks)
         return {"success": True, "message": "dev_mode_skip_verification"}
 
     # ── Production: verify HMAC-SHA256 signature ──
@@ -68,12 +70,12 @@ def verify_payment(req: schemas.PaymentVerify, db: Session = Depends(get_db)):
 
     # ── Signature valid → mark order as paid in database ──
     if req.order_id:
-        _mark_paid(req.order_id, req.razorpay_payment_id, db)
+        _mark_paid(req.order_id, req.razorpay_payment_id, db, background_tasks)
 
     return {"success": True, "message": "Payment verified and order updated"}
 
 
-def _mark_paid(ds_order_id: str, razorpay_payment_id: str, db: Session):
+def _mark_paid(ds_order_id: str, razorpay_payment_id: str, db: Session, background_tasks: BackgroundTasks):
     """Set payment_status='paid' on the DS order record."""
     order = db.query(models.Order).filter(models.Order.id == ds_order_id).first()
     if order:
@@ -89,10 +91,10 @@ def _mark_paid(ds_order_id: str, razorpay_payment_id: str, db: Session):
         db.add(tracking)
         db.commit()
         
-        # Send order confirmation email now that it is paid
+        # Send order confirmation email now that it is paid via background task
         try:
             from app.routes.email_service import send_order_confirmation
             saved_items = db.query(models.OrderItem).filter(models.OrderItem.order_id == ds_order_id).all()
-            send_order_confirmation(order, saved_items)
+            background_tasks.add_task(send_order_confirmation, order, saved_items)
         except Exception as e:
-            print(f"[email] Error sending confirmation: {e}")
+            print(f"[email] Error queuing confirmation: {e}")

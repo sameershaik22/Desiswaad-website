@@ -35,8 +35,10 @@ def serialize_order(order):
     d["order_status"] = order.status
     return d
 
+from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
+
 @router.post("/")
-def create_order(request: Request, order: schemas.OrderCreate, db: Session = Depends(get_db)):
+def create_order(request: Request, order: schemas.OrderCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user_id = get_current_user_id(request, db)
     # Generate DS order id
     order_id = f"DS{int(time.time())}"
@@ -57,11 +59,34 @@ def create_order(request: Request, order: schemas.OrderCreate, db: Session = Dep
         cod_charge=order.cod_charge,
         total=order.total,
         payment_mode=order.payment_mode,
-        # COD is always "pending" (cash collected on delivery)
-        # Online starts as "pending" — updated to "paid" by /payment/verify
         payment_status="pending"
     )
     db.add(new_order)
+    
+    # Auto-save address for logged-in users
+    if user_id:
+        existing_addr = db.query(models.Address).filter(
+            models.Address.user_id == user_id,
+            models.Address.address_line == order.address,
+            models.Address.pincode == order.pincode
+        ).first()
+        
+        if not existing_addr:
+            # Set other addresses to non-default
+            db.query(models.Address).filter(models.Address.user_id == user_id).update({models.Address.is_default: False})
+            
+            new_addr = models.Address(
+                user_id=user_id,
+                recipient_name=order.customer_name,
+                phone=order.phone,
+                address_line=order.address,
+                city=order.city,
+                state=order.state,
+                pincode=order.pincode,
+                country=order.country,
+                is_default=True
+            )
+            db.add(new_addr)
     
     for item in order.items:
         db_item = models.OrderItem(
@@ -85,13 +110,13 @@ def create_order(request: Request, order: schemas.OrderCreate, db: Session = Dep
     # Re-query to get the full order with relationships for email
     saved_order = db.query(models.Order).filter(models.Order.id == order_id).first()
     saved_items = db.query(models.OrderItem).filter(models.OrderItem.order_id == order_id).all()
-    # Send order confirmation email to customer (non-blocking — fails silently)
+    # Send order confirmation email to customer via background task
     # Only send immediately for non-Online (e.g. COD) orders. Online orders receive it after verification.
     if order.payment_mode != "Online":
         try:
-            send_order_confirmation(saved_order, saved_items)
+            background_tasks.add_task(send_order_confirmation, saved_order, saved_items)
         except Exception as e:
-            print(f"[email] Error sending confirmation: {e}")
+            print(f"[email] Error queuing confirmation: {e}")
     return {"success": True, "orderId": order_id}
 
 @router.get("/{order_id}")

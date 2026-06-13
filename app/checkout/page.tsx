@@ -854,6 +854,40 @@ export default function CheckoutPage() {
                           </div>
                         );
                       })}
+                      {/* Add New Address Card */}
+                      <div
+                        onClick={() => {
+                          setForm({
+                            name: user?.name || '',
+                            email: user?.email || '',
+                            phone: user?.phone || '',
+                            address: '',
+                            city: '',
+                            state: 'Telangana',
+                            pincode: '',
+                            country: 'India',
+                          });
+                          setIsIndia(true);
+                        }}
+                        style={{
+                          flex: '0 0 150px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: 12,
+                          background: '#fff',
+                          border: '1.5px dashed #ccc',
+                          borderRadius: 10,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.borderColor = '#1E5B3A'}
+                        onMouseLeave={e => e.currentTarget.style.borderColor = '#ccc'}
+                      >
+                        <span style={{ fontSize: '1.5rem', color: '#1E5B3A', marginBottom: 8 }}>➕</span>
+                        <strong style={{ fontSize: '0.82rem', color: '#555' }}>Add New Address</strong>
+                      </div>
                     </div>
                   </div>
                 )}
