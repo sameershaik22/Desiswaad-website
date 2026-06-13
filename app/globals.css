@@ -2461,7 +2461,8 @@ ol {
 .navbar__inner {
   display: flex;
   align-items: center;
-  gap: 32px;
+  justify-content: space-between;
+  gap: 16px;
   height: 72px;
 }
 
@@ -2616,13 +2617,49 @@ ol {
   transition: all 0.3s;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .navbar__wa-btn span {
     display: none;
+  }
+  
+  .navbar__wa-btn {
+    padding: 8px !important;
   }
 
   .navbar__hamburger {
     display: flex;
+    padding: 4px;
+  }
+
+  .navbar__inner {
+    gap: 8px;
+    justify-content: space-between;
+  }
+
+  .navbar__actions {
+    gap: 6px;
+  }
+  
+  .navbar__brand-name {
+    font-size: 1.05rem;
+  }
+
+  .navbar__cart-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .navbar__login-btn {
+    padding: 8px 12px !important;
+  }
+
+  @media (max-width: 380px) {
+    .login-text {
+      display: none;
+    }
+    .navbar__brand-name {
+      font-size: 0.95rem;
+    }
   }
 
   .navbar__links {

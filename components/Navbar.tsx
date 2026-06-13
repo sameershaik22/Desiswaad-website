@@ -140,13 +140,13 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <Link href="/login"
+              <Link href="/login" className="navbar__login-btn"
                 style={{
                   padding: '8px 16px', background: 'linear-gradient(135deg,#1E5B3A,#2d7a4f)',
                   color: '#fff', borderRadius: 20, fontWeight: 700, textDecoration: 'none',
                   fontSize: '0.82rem', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 5,
                 }}>
-                🔑 Login
+                <span>🔑</span> <span className="login-text">Login</span>
               </Link>
             )}
 
