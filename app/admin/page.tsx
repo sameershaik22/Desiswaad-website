@@ -918,7 +918,7 @@ export default function AdminDashboard() {
             {/* Footer Instructions */}
             <div style={{ borderTop: '2px solid #000', paddingTop: '10px', textAlign: 'center', fontSize: '10px' }}>
               <p style={{ margin: 0, fontWeight: 'bold' }}>If undelivered, return to Sender:</p>
-              <p style={{ margin: '2px 0 0 0' }}>DesiSwad Foods, Near Main Market, Hyderabad, Telangana - 500001</p>
+              <p style={{ margin: '2px 0 0 0' }}>DesiSwad Foods, Kaghaznagar, Viney Garden Opposite Lane, Gandhi Nagar 2, Telangana, Factory 504296</p>
             </div>
           </div>
         )}
@@ -943,8 +943,8 @@ export default function AdminDashboard() {
                 <h1 style={{ margin: 0, fontSize: '28px', fontWeight: 'bold', color: '#1E5B3A' }}>DESISWAD FOODS</h1>
                 <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#555' }}>Pure Taste, Pure Quality</p>
                 <p style={{ margin: '8px 0 0 0', fontSize: '11px', lineHeight: '1.4' }}>
-                  Plot No 42, Near Main Market, Pragathi Nagar,<br />
-                  Hyderabad, Telangana - 500090<br />
+                  Kaghaznagar, Viney Garden Opposite Lane, Gandhi Nagar 2,<br />
+                  Telangana, Factory 504296<br />
                   Contact: +91 96404 97340 | support@desiswad.com
                 </p>
               </div>

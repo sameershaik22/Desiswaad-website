@@ -453,6 +453,10 @@ export default function MyOrdersPage() {
               <div>
                 <h1 class="brand-name">DesiSwaad</h1>
                 <p style="margin: 4px 0 0; color: #616161; font-size: 0.9rem;">Authentic Homemade Telugu Snacks</p>
+                <p style="margin: 6px 0 0; color: #616161; font-size: 0.75rem; line-height: 1.3;">
+                  Kaghaznagar, Viney Garden Opposite Lane, Gandhi Nagar 2,<br />
+                  Telangana, Factory 504296
+                </p>
               </div>
               <div style="text-align: right;">
                 <h2 style="margin: 0; color: #B22222; font-size: 1.5rem;">TAX INVOICE</h2>

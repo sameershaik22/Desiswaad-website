@@ -82,7 +82,7 @@ export default function Footer() {
               </li>
               <li>
                 <span>📍</span>
-                <span>Kaghaznagar</span>
+                <span>Kaghaznagar, Viney Garden Opposite Lane, Gandhi Nagar 2, Telangana, Factory 504296</span>
               </li>
             </ul>
             <a
