@@ -2775,6 +2775,10 @@ ol {
   background: #25D366;
 }
 
+.footer__social--google:hover {
+  background: #4285F4;
+}
+
 .footer__col-title {
   font-size: 0.82rem;
   font-weight: 700;
