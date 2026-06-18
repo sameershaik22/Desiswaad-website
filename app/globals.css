@@ -1173,6 +1173,118 @@ ol {
   padding: 80px 0;
 }
 
+/* Infrastructure Section */
+.infra-section {
+  background: #fff;
+  padding: 80px 0;
+  border-top: 1px solid var(--cream-dark);
+  border-bottom: 1px solid var(--cream-dark);
+}
+
+.infra-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.infra-card {
+  background: var(--cream-light);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.infra-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--gold);
+}
+
+.infra-card__img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+}
+
+.infra-card__content {
+  padding: 32px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.infra-card__tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.infra-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--red-dark);
+  margin-bottom: 12px;
+}
+
+.infra-card__desc {
+  font-size: 0.95rem;
+  color: var(--gray-600);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.infra-card__subtitle-benefits {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--green-dark);
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(30, 91, 58, 0.15);
+  padding-bottom: 6px;
+}
+
+.infra-card__benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.infra-card__benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+  color: var(--gray-800);
+  font-weight: 500;
+}
+
+.infra-card__benefit-icon {
+  color: var(--green);
+  font-weight: bold;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 992px) {
+  .infra-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+
 /* ========================================
    PRODUCT DETAIL PAGE
    ======================================== */

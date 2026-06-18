@@ -62,6 +62,106 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Infrastructure & Hygiene */}
+      <section className="infra-section">
+        <div className="container">
+          <div className="text-center" style={{ marginBottom: 48 }}>
+            <span className="section-label">Our Infrastructure</span>
+            <h2 className="heading-lg">Advanced Technology Meets Traditional Taste</h2>
+            <div className="gold-line" />
+            <p style={{ color: 'var(--gray-600)', maxWidth: 680, margin: '16px auto 0 auto', fontSize: '1.05rem', lineHeight: '1.7' }}>
+              We believe in combining the purity of home-style recipes with state-of-the-art machinery. Our production unit is equipped with advanced food-grade processing and packaging machines to ensure the highest standards of hygiene, safety, and crunch.
+            </p>
+          </div>
+
+          <div className="infra-grid">
+            {/* Oil Removal Machine */}
+            <div className="infra-card">
+              <div className="infra-card__img">
+                <Image 
+                  src="/oilremovier.jpeg" 
+                  alt="Advanced Centrifugal Oil Removal Machine" 
+                  fill 
+                  style={{ objectFit: 'contain' }} 
+                />
+              </div>
+              <div className="infra-card__content">
+                <span className="infra-card__tag">Health & Crispiness</span>
+                <h3 className="infra-card__title">1. Oil Removal Machine</h3>
+                <p className="infra-card__desc">
+                  Excess oil is one of the main concerns with deep-fried traditional snacks. Our advanced centrifugal oil removal machine helps reduce excess surface oil from freshly prepared snacks right after frying. This process enhances crispiness while maintaining the authentic taste, rich texture, and aroma of Telangana.
+                </p>
+                <h4 className="infra-card__subtitle-benefits">Key Benefits</h4>
+                <ul className="infra-card__benefits">
+                  <li className="infra-card__benefit-item">
+                    <span className="infra-card__benefit-icon">✓</span>
+                    Removes excess surface oil for lighter eating
+                  </li>
+                  <li className="infra-card__benefit-item">
+                    <span className="infra-card__benefit-icon">✓</span>
+                    Improves crispiness and shelf life
+                  </li>
+                  <li className="infra-card__benefit-item">
+                    <span className="infra-card__benefit-icon">✓</span>
+                    Helps maintain freshness and prevents oil odor
+                  </li>
+                  <li className="infra-card__benefit-item">
+                    <span className="infra-card__benefit-icon">✓</span>
+                    Food-grade SUS-304 stainless steel construction
+                  </li>
+                  <li className="infra-card__benefit-item">
+                    <span className="infra-card__benefit-icon">✓</span>
+                    100% hygienic processing standards
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Hygienic Packaging Machine */}
+            <div className="infra-card">
+              <div className="infra-card__img">
+                <Image 
+                  src="/hygenic%20machine.jpeg" 
+                  alt="Automatic Hygienic Packaging Machine" 
+                  fill 
+                  style={{ objectFit: 'contain' }} 
+                />
+              </div>
+              <div className="infra-card__content">
+                <span className="infra-card__tag">Hygiene & Freshness</span>
+                <h3 className="infra-card__title">2. Hygienic Packaging Machine</h3>
+                <p className="infra-card__desc">
+                  Our automatic packaging machine ensures every product is packed with absolute hygiene, accurate weight, and airtight sealing. By using advanced nitrogen-flushing technology in multi-layer barrier pouches, we protect the snacks from humidity and oxidation, preserving their fresh, home-cooked crunch for weeks.
+                </p>
+                <h4 className="infra-card__subtitle-benefits">Key Benefits</h4>
+                <ul className="infra-card__benefits">
+                  <li className="infra-card__benefit-item">
+                    <span className="infra-card__benefit-icon">✓</span>
+                    Hygienic & safe packaging with zero direct touch
+                  </li>
+                  <li className="infra-card__benefit-item">
+                    <span className="infra-card__benefit-icon">✓</span>
+                    Accurate weight filling using multi-head weigher
+                  </li>
+                  <li className="infra-card__benefit-item">
+                    <span className="infra-card__benefit-icon">✓</span>
+                    Airtight sealing to prevent air leaks and humidity
+                  </li>
+                  <li className="infra-card__benefit-item">
+                    <span className="infra-card__benefit-icon">✓</span>
+                    Maintains freshness & crunch for extended shelf-life
+                  </li>
+                  <li className="infra-card__benefit-item">
+                    <span className="infra-card__benefit-icon">✓</span>
+                    Tamper-resistant and durable packaging design
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Values */}
       <section className="section" style={{ background: '#fff' }}>
         <div className="container">
