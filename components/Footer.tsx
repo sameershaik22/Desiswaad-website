@@ -61,7 +61,7 @@ export default function Footer() {
             <h4 className="footer__col-title">Our Snacks</h4>
             <ul className="footer__col-links">
               <li><Link href="/shop?category=Namkeen">Namkeen</Link></li>
-              <li><Link href="/shop?category=Sweet+Snacks">Sweet Snacks</Link></li>
+              <li><Link href="/shop?category=Combos">Combo Packs</Link></li>
               <li><Link href="/shop">Bestsellers</Link></li>
               <li><Link href="/shop">Festival Packs</Link></li>
               <li><Link href="/shop">Gift Hampers</Link></li>
@@ -101,7 +101,7 @@ export default function Footer() {
       <div className="footer__bottom">
         <div className="container footer__bottom-inner">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <p>© 2024 DesiSwad Foods. All rights reserved.</p>
+            <p>© 2026 DesiSwad Foods. All rights reserved.</p>
             <div style={{ display: 'flex', gap: '12px', fontSize: '0.78rem', color: '#888', flexWrap: 'wrap', alignItems: 'center' }}>
               <Link href="/privacy" style={{ color: '#888', transition: 'color 0.2s', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#888'}>Privacy Policy</Link>
               <span>•</span>

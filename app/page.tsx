@@ -17,9 +17,9 @@ const TRUST_BADGES = [
 ];
 
 const CATEGORIES = [
-  { name: 'Namkeen', emoji: '🌶️', desc: 'Spicy & Savoury Snacks', count: '5 Items' },
-  { name: 'Sweet Snacks', emoji: '🍯', desc: 'Traditional Sweet Treats', count: '1 Item' },
-  { name: 'Gift Hampers', emoji: '🎁', desc: 'Festival Special Packs', count: 'Coming Soon' },
+  { name: 'Namkeen', displayName: 'Namkeen', emoji: '🌶️', desc: 'Spicy & Savoury Snacks', count: '3 Items' },
+  { name: 'Combos', displayName: 'Combo Packs', emoji: '📦', desc: 'Value Combo Packs', count: '4 Items' },
+  { name: 'Gift Hampers', displayName: 'Gift Hampers', emoji: '🎁', desc: 'Festival Special Packs', count: 'Coming Soon' },
 ];
 
 export default function HomePage() {
@@ -43,8 +43,8 @@ export default function HomePage() {
               <span className="hero__title-highlight">Telangana</span>
             </h1>
             <p className="hero__subtitle">
-              Handcrafted snacks made with love and tradition.<br />
-              Fresh from our kitchen to your doorstep.
+              Handmade Telangana Snacks<br />
+              Freshly prepared in small batches using traditional recipes. Delivered across India
             </p>
             <div className="hero__tagline">Pure Taste • Pure Trust</div>
             <div className="hero__actions">
@@ -87,7 +87,7 @@ export default function HomePage() {
             {CATEGORIES.map((cat, i) => (
               <Link key={i} href={`/shop${cat.name !== 'Gift Hampers' ? `?category=${encodeURIComponent(cat.name)}` : ''}`} className="cat-card">
                 <span className="cat-card__emoji">{cat.emoji}</span>
-                <h3 className="cat-card__name">{cat.name}</h3>
+                <h3 className="cat-card__name">{cat.displayName}</h3>
                 <p className="cat-card__desc">{cat.desc}</p>
                 <span className="cat-card__count">{cat.count}</span>
               </Link>
