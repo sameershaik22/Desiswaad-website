@@ -545,6 +545,25 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [orderId, setOrderId] = useState('');
   
+  const [couponInput, setCouponInput] = useState('');
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponError, setCouponError] = useState('');
+
+  const handleApplyCoupon = () => {
+    setCouponError('');
+    if (couponInput.trim().toUpperCase() === 'HELLOHYD') {
+      setCouponApplied(true);
+    } else {
+      setCouponError('Invalid coupon code. Try HELLOHYD.');
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setCouponApplied(false);
+    setCouponInput('');
+    setCouponError('');
+  };
+  
   const [form, setForm] = useState({
     name: user?.name || '', email: user?.email || '', phone: user?.phone || '', address: '', city: '', state: 'Telangana', pincode: '', country: 'India',
   });
@@ -594,9 +613,10 @@ export default function CheckoutPage() {
   }, [user, savedAddresses]);
 
   const subtotal = total();
+  const discount = couponApplied ? subtotal * 0.1 : 0;
   const shipping = isIndia ? (subtotal >= 499 ? 0 : 60) : 999;
   const codCharge = isIndia && paymentMode === 'cod' ? 30 : 0;
-  const grand = subtotal + shipping + codCharge;
+  const grand = subtotal - discount + shipping + codCharge;
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -650,6 +670,7 @@ export default function CheckoutPage() {
           items: items.map(i => ({ id: i.id, name: i.name, weight: i.weight, qty: i.quantity, price: i.price })),
           subtotal, shipping, cod_charge: codCharge, total: grand,
           payment_mode: 'COD',
+          notes: couponApplied ? 'Coupon: HELLOHYD (10% Off + Free Surprise Gift)' : '',
         }),
       });
       const data = await res.json();
@@ -684,6 +705,7 @@ export default function CheckoutPage() {
           items: items.map(i => ({ id: i.id, name: i.name, weight: i.weight, qty: i.quantity, price: i.price })),
           subtotal, shipping, cod_charge: 0, total: grand,
           payment_mode: 'Online',
+          notes: couponApplied ? 'Coupon: HELLOHYD (10% Off + Free Surprise Gift)' : '',
         }),
       });
       const orderData = await orderRes.json();
@@ -1088,6 +1110,16 @@ export default function CheckoutPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>Items:</span><span>₹{subtotal.toFixed(2)}</span>
               </div>
+              {couponApplied && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#c62828', fontWeight: 600 }}>
+                  <span>Promo Discount (10%):</span><span>-₹{discount.toFixed(2)}</span>
+                </div>
+              )}
+              {couponApplied && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#2e7d32', fontWeight: 700 }}>
+                  <span>Surprise Gift:</span><span>FREE 🎁</span>
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>Delivery:</span><span>₹{shipping.toFixed(2)}</span>
               </div>
@@ -1100,6 +1132,79 @@ export default function CheckoutPage() {
               <div style={{ paddingTop: '16px', marginTop: '8px', borderTop: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', fontWeight: 700, color: '#B22222', fontSize: '1.2rem' }}>
                 <span>Order Total:</span><span>₹{grand.toFixed(2)}</span>
               </div>
+            </div>
+
+            {/* Promo Code / Coupon Section */}
+            <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #e0e0e0' }}>
+              <p style={{ fontSize: '0.85rem', fontWeight: 700, color: '#333', marginBottom: '8px' }}>Promo Code or Coupon:</p>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input
+                  type="text"
+                  placeholder="Enter Code (e.g. HELLOHYD)"
+                  value={couponInput}
+                  onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                  disabled={couponApplied}
+                  style={{
+                    flex: 1,
+                    padding: '8px 12px',
+                    border: '1.5px solid #ccc',
+                    borderRadius: '6px',
+                    fontSize: '0.85rem',
+                    textTransform: 'uppercase',
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyCoupon}
+                  disabled={couponApplied || !couponInput.trim()}
+                  style={{
+                    padding: '8px 16px',
+                    background: couponApplied ? '#e0e0e0' : 'linear-gradient(135deg, #1E5B3A, #2d7a4f)',
+                    color: couponApplied ? '#888' : '#fff',
+                    borderRadius: '6px',
+                    fontWeight: 700,
+                    fontSize: '0.85rem',
+                    cursor: couponApplied ? 'default' : 'pointer',
+                    border: 'none',
+                  }}
+                >
+                  {couponApplied ? 'Applied' : 'Apply'}
+                </button>
+              </div>
+              
+              {couponError && (
+                <p style={{ color: '#c62828', fontSize: '0.78rem', fontWeight: 600, marginTop: '6px', margin: '6px 0 0' }}>
+                  ❌ {couponError}
+                </p>
+              )}
+              
+              {couponApplied && (
+                <div style={{ background: '#e8f5e9', border: '1px solid #c8e6c9', borderRadius: '6px', padding: '10px', marginTop: '12px' }}>
+                  <p style={{ color: '#2e7d32', fontSize: '0.82rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span>🎉</span> Code HELLOHYD Applied!
+                  </p>
+                  <p style={{ color: '#555', fontSize: '0.78rem', margin: '4px 0 0 0' }}>
+                    🎁 FREE Surprise Gift + 10% Discount added to your order!
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#c62828',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      textDecoration: 'underline',
+                      padding: 0,
+                      marginTop: '6px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Remove Code
+                  </button>
+                </div>
+              )}
             </div>
 
           </div>

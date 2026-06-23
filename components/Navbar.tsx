@@ -49,6 +49,22 @@ export default function Navbar() {
 
   return (
     <>
+      <div className="promo-bar">
+        <div className="promo-bar__track">
+          <div className="promo-bar__item">
+            🎁 FREE Surprise Gift on Your First Order | Use Code: <span className="promo-bar__code">HELLOHYD</span> ✨
+          </div>
+          <div className="promo-bar__item">
+            🎁 FREE Surprise Gift on Your First Order | Use Code: <span className="promo-bar__code">HELLOHYD</span> ✨
+          </div>
+          <div className="promo-bar__item">
+            🎁 FREE Surprise Gift on Your First Order | Use Code: <span className="promo-bar__code">HELLOHYD</span> ✨
+          </div>
+          <div className="promo-bar__item">
+            🎁 FREE Surprise Gift on Your First Order | Use Code: <span className="promo-bar__code">HELLOHYD</span> ✨
+          </div>
+        </div>
+      </div>
       <nav className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
         <div className="container navbar__inner">
           {/* Brand */}

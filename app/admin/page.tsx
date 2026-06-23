@@ -675,6 +675,14 @@ export default function AdminDashboard() {
                   )}
                 </div>
 
+                {/* Notes (e.g. Coupon Info) */}
+                {selectedOrder.notes && (
+                  <div style={{ background: '#fffbeb', border: '1px solid #f5d0a1', borderRadius: 10, padding: 16 }}>
+                    <p style={{ margin: '0 0 6px', fontWeight: 700, color: '#b27b00', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📝 Order Notes / Coupon</p>
+                    <p style={{ margin: 0, color: '#333', fontSize: '0.95rem', fontWeight: 600 }}>{selectedOrder.notes}</p>
+                  </div>
+                )}
+
                 {/* Items */}
                 <div style={{ background: '#f9fafb', borderRadius: 10, padding: 16 }}>
                   <p style={{ margin: '0 0 12px', fontWeight: 700, color: '#333', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>🛒 Order Items</p>

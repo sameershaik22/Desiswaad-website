@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <Navbar />
-        <main style={{ paddingTop: '72px' }}>
+        <main>
           {children}
         </main>
         <Footer />
