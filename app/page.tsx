@@ -75,27 +75,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ===== CATEGORIES ===== */}
-      <section className="section">
-        <div className="container">
-          <div className="text-center" style={{ marginBottom: 40 }}>
-            <span className="section-label">Browse By Type</span>
-            <h2 className="heading-lg">Our Snack Collections</h2>
-            <div className="gold-line" />
-          </div>
-          <div className="categories-grid">
-            {CATEGORIES.map((cat, i) => (
-              <Link key={i} href={`/shop${cat.name !== 'Gift Hampers' ? `?category=${encodeURIComponent(cat.name)}` : ''}`} className="cat-card">
-                <span className="cat-card__emoji">{cat.emoji}</span>
-                <h3 className="cat-card__name">{cat.displayName}</h3>
-                <p className="cat-card__desc">{cat.desc}</p>
-                <span className="cat-card__count">{cat.count}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ===== BESTSELLERS ===== */}
       <section className="section" style={{ background: '#fff', paddingTop: '64px' }}>
         <div className="container">
@@ -126,6 +105,27 @@ export default function HomePage() {
           </div>
           <div className="products-grid">
             {featured.map((p) => <ProductCard key={p.id} product={p} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CATEGORIES ===== */}
+      <section className="section" style={{ background: '#fff', paddingTop: '64px' }}>
+        <div className="container">
+          <div className="text-center" style={{ marginBottom: 40 }}>
+            <span className="section-label">Browse By Type</span>
+            <h2 className="heading-lg">Our Snack Collections</h2>
+            <div className="gold-line" />
+          </div>
+          <div className="categories-grid">
+            {CATEGORIES.map((cat, i) => (
+              <Link key={i} href={`/shop${cat.name !== 'Gift Hampers' ? `?category=${encodeURIComponent(cat.name)}` : ''}`} className="cat-card">
+                <span className="cat-card__emoji">{cat.emoji}</span>
+                <h3 className="cat-card__name">{cat.displayName}</h3>
+                <p className="cat-card__desc">{cat.desc}</p>
+                <span className="cat-card__count">{cat.count}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>

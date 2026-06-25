@@ -105,11 +105,11 @@ ol {
 }
 
 .section {
-  padding: 80px 0;
+  padding: 40px 0;
 }
 
 .section-sm {
-  padding: 48px 0;
+  padding: 24px 0;
 }
 
 .text-center {
@@ -506,7 +506,7 @@ ol {
    ======================================== */
 .hero {
   position: relative;
-  min-height: calc(100vh - var(--navbar-h) - var(--promo-h));
+  min-height: 450px;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -526,8 +526,8 @@ ol {
 .hero__content {
   position: relative;
   z-index: 2;
-  padding-top: 60px;
-  padding-bottom: 80px;
+  padding-top: 40px;
+  padding-bottom: 48px;
 }
 
 .hero__text {
@@ -727,7 +727,7 @@ ol {
 
 .story-strip {
   background: #1E5B3A;
-  padding: 80px 0;
+  padding: 40px 0;
 }
 
 .story-strip__inner {
@@ -796,7 +796,7 @@ ol {
 
 .cta-banner {
   background: linear-gradient(135deg, #B22222 0%, #8B1A1A 50%, #6B1010 100%);
-  padding: 80px 0;
+  padding: 40px 0;
 }
 
 /* ========================================
@@ -4944,6 +4944,9 @@ main {
   /* Layout Paddings */
   .section { padding: 40px 0 !important; }
   .hero__content { padding-top: 30px; padding-bottom: 50px; text-align: center; }
+  .hero__title { font-size: clamp(2rem, 8vw, 2.6rem) !important; }
+  .hero__subtitle { font-size: 1.05rem !important; }
+  .hero__tagline { margin-bottom: 24px !important; }
   .hero__actions { justify-content: center; }
   .container { padding: 0 16px !important; }
   

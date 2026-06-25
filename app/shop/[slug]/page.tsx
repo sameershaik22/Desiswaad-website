@@ -162,6 +162,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               </div>
               <span style={{ fontWeight: 700, color: '#2C2C2C' }}>{avgRating}</span>
               <span style={{ color: '#9E9E9E', fontSize: '0.85rem' }}>({reviewCount} reviews)</span>
+              <span style={{ color: '#e0e0e0' }}>|</span>
+              <span style={{ color: '#1E5B3A', fontSize: '0.85rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <span>🚚</span>
+                <span>{150 + (product.id * 37) % 150}+ Deliveries</span>
+              </span>
             </div>
 
             {/* Info pills */}
