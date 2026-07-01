@@ -28,6 +28,18 @@ def get_current_user_id(request: Request, db: Session):
             pass
     return None
 
+def get_current_user_email(request: Request) -> str | None:
+    """Decode JWT and return the email claim — works even if user row is missing."""
+    auth = request.headers.get("Authorization")
+    if auth and auth.startswith("Bearer "):
+        token = auth.split(" ")[1]
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            return payload.get("sub")
+        except JWTError:
+            pass
+    return None
+
 def serialize_order(order):
     if not order:
         return None
@@ -129,25 +141,38 @@ def get_order(order_id: str, db: Session = Depends(get_db)):
 
 @router.get("/user/my-orders")
 def get_my_orders(request: Request, db: Session = Depends(get_db)):
+    # Try to resolve user by user_id first (normal path)
     user_id = get_current_user_id(request, db)
-    if not user_id:
+    email = get_current_user_email(request)
+
+    # Reject completely unauthenticated requests
+    if not user_id and not email:
         raise HTTPException(status_code=401, detail="Unauthorized")
-        
-    user = db.query(models.User).filter(models.User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=401, detail="User not found")
-        
-    # Link past guest orders by email if matching
-    if user.email:
-        db.query(models.Order).filter(
-            models.Order.email == user.email,
-            models.Order.user_id == None
-        ).update({models.Order.user_id: user_id}, synchronize_session=False)
-        db.commit()
-        
-    orders = db.query(models.Order).filter(
-        (models.Order.user_id == user_id) | (models.Order.email == user.email)
-    ).order_by(models.Order.created_at.desc()).all()
+
+    if user_id:
+        user = db.query(models.User).filter(models.User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+
+        # Link any unowned guest orders placed with same email
+        if user.email:
+            db.query(models.Order).filter(
+                models.Order.email == user.email,
+                models.Order.user_id == None
+            ).update({models.Order.user_id: user_id}, synchronize_session=False)
+            db.commit()
+
+        orders = db.query(models.Order).filter(
+            (models.Order.user_id == user_id) | (models.Order.email == user.email)
+        ).order_by(models.Order.created_at.desc()).all()
+
+    else:
+        # User row was deleted (e.g. post-migration wipe) but token is still valid.
+        # Fall back to email-only lookup so orders are not lost.
+        orders = db.query(models.Order).filter(
+            models.Order.email == email
+        ).order_by(models.Order.created_at.desc()).all()
+
     return {"orders": [serialize_order(o) for o in orders]}
 
 from pydantic import BaseModel
