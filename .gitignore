@@ -64,6 +64,11 @@ venv.bak/
 server/desiswad.db
 
 # =========================
+# DB Backups (keep local only — contains sensitive data)
+# =========================
+backend/backups/
+
+# =========================
 # Environment Variables
 # =========================
 # Make sure .env files are NOT pushed!
